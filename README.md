@@ -6,6 +6,10 @@
 [<img src="https://img.shields.io/badge/Demos-%230077B5.svg?&style=plastic&logo=youtube&labelColor=cd201f&color=ffffff" />](https://youtu.be/YyJPZQgEErM?si=zEaETt5C12FjFMXF)
 [<img src="https://img.shields.io/badge/Data-%230077B5.svg?&style=plastic&logo=google-drive&labelColor=white&color=blue" />](https://drive.google.com/drive/folders/1xV4fJjdUIpxFVsEOBQm32DzecbWMUBrZ?usp=sharing)
 
+<p align="center">
+  <img src="assets/teaser.gif" width="600">
+</p>
+
 ## Summary
 
 We propose a framework for learning multimodal grasp distributions that leverages variational shape inference to enhance robustness against shape noise and measurement sparsity. Our approach learns a variational autoencoder for shape inference using implicit neural representations, and then uses these learned geometric features to guide a diffusion model for grasp synthesis on the SE(3) manifold. Additionally, we introduce a test-time grasp optimization technique that can be integrated as a plugin to further enhance grasping performance. Experimental results demonstrate that our shape inference for grasp synthesis formulation outperforms state-of-the-art multimodal grasp synthesis methods on the [ACRONYM](https://github.com/NVlabs/acronym) dataset by 6.3%, while demonstrating robustness to deterioration in point cloud density compared to other approaches. Furthermore, our trained model achieves zero-shot transfer to real-world manipulation of household objects, generating 34% more successful grasps than baselines despite measurement noise and point cloud calibration errors.
