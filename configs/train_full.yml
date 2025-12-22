@@ -1,0 +1,65 @@
+data:
+  data_dir: data-dir
+  sdf_data_subdir: mesh2sdf-nglod-600k
+  class_type: ["Book", "Bottle", "Bowl", "Cap", "CellPhone",
+               "Cup", "Hammer", "Mug", "Scissors", "Shampoo"]
+  render_idxs: [0, 100, 200, 300]
+  grasp_density: 100
+  pc_points: 1024
+  sdf_points: 1000
+  signed_dist: true
+
+train:
+  batch_size: 32
+  num_workers: 15
+
+model:
+  ckpt_dir: runs-dir/
+  NetworkSpecs:
+    arch: "VSIGD"
+    feat_net:
+      cond_fn_in: cc  # cc or film
+      cond_fn: film  # cc or film
+      # parameters for the feature encoder (TimeLatentFeatureEncoder)
+      dims: [512, 512, 512, 512, 512, 512, 512, 512, 512, 512]
+      in_dim: 3
+      enc_dim: 132
+      activation: "relu"
+      out_dim: 7
+      latent_size_point_features: 256  # pc point features
+      latent_in: [2, 4, 6, 8]
+      dropout:
+        layers_prob: 0.2
+        layers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    energy_net:
+      # parameters for the decoder (Energy MLP)
+      hidden_dim: 512
+    points:
+      # parameters for the uniformly sampled point cloud
+      n_points: 30
+      loc: [0.0, 0.0, 0.5]
+      scale: [0.7, 0.5, 0.7]
+    ptvae:
+      hidden_dim: 512
+      latent_dim: 256
+      pn_hidden_dim: 128
+      num_layers: 9
+      ptnet_ckpt: ckpts-ptvae/ptnet.pth
+      bvae_ckpt: ckpts-ptvae/bvae.pth
+
+optimizer:
+  epochs: 100000
+  epoch_save_period: 500
+  render_save_period: 500
+  ams_grad: false
+  lr_per_group:
+    vae_model: -1
+    pointnet: -1
+    feat_net: 0.0001
+    energy_net: 0.0001
+  wd_per_group:
+    feat_net: 0
+    energy_net: 0
+  loss:
+    sdf_loss_weight: 1.0
+    denoise_loss_weight: 1.0

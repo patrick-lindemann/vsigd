@@ -1,0 +1,15 @@
+.vscode
+__pycache__/
+
+data-dir/*/
+runs-dir/*/
+tests-dir/*/
+ckpts-ptvae/*/
+
+*.pyc
+*.egg
+*.egg-info
+*.npy
+*.npz
+*.pt
+*.pth
