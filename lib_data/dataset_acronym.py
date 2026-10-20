@@ -263,14 +263,11 @@ class PointcloudAcronymAndNglodSDFDataset(Dataset):
         assert pc.shape == (self.n_pointcloud, 3)
         return pc
 
-    def _get_pc_sdf_data(self, grasp_obj):
+    def _load_sdf_pack(self, grasp_obj):
         """
-        SDF data (normalized)
+        SDF pack of an object: a name for messages, then its arrays
         """
-        # data dist: 70% near-surface, 30% random
-        near_surf_count = int(self.n_occ * 0.7)
-        rand_count = self.n_occ - near_surf_count
-
+        surf_pts = None
         # obj_fp_base = self.gt_files[idx]
         filename = grasp_obj.sdf_filename_from_mesh_fname()
         cat = filename.parent.stem
@@ -289,6 +286,35 @@ class PointcloudAcronymAndNglodSDFDataset(Dataset):
         rand_sdf = np.load(obj_fp_base + "-rand-sdf.npy", mmap_mode="r")
         center = np.load(obj_fp_base + "-v_center.npy")
         scale = np.load(obj_fp_base + "-v_scale.npy")
+        return (
+            obj_fp_base,
+            surf_pts,
+            near_pts,
+            near_sdf,
+            rand_pts,
+            rand_sdf,
+            center,
+            scale,
+        )
+
+    def _get_pc_sdf_data(self, grasp_obj):
+        """
+        SDF data (normalized)
+        """
+        # data dist: 70% near-surface, 30% random
+        near_surf_count = int(self.n_occ * 0.7)
+        rand_count = self.n_occ - near_surf_count
+
+        (
+            obj_fp_base,
+            surf_pts,
+            near_pts,
+            near_sdf,
+            rand_pts,
+            rand_sdf,
+            center,
+            scale,
+        ) = self._load_sdf_pack(grasp_obj)
 
         assert near_pts.shape[0] == math.ceil(
             600000 * 0.7
