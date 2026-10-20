@@ -1,0 +1,77 @@
+[project]
+name = "vsigd"
+version = "0.0.0"
+requires-python = "==3.10.*"
+dependencies = [
+  # pkgs-install.sh (conda part)
+  "torch==2.0.1",
+  "torchvision==0.15.2",
+  "torch-scatter==2.1.2",
+  "pytorch3d==0.7.4",
+  "scikit-sparse==0.4.8",
+  # requirements.txt, verbatim specifiers
+  "numpy<2",
+  "scipy",
+  "pandas",
+  "matplotlib==3.7.5",
+  "open3d",
+  "tensorboard",
+  "theseus-ai==0.1.3",
+  "tqdm",
+  "trimesh<4",
+  "pyglet<2",
+  "python-fcl",
+  "cython",
+  "ninja",
+  "scikit-image",
+  "pykdtree",
+  "rich",
+  "h5py==3.7.0",
+  "plyfile",
+  # imported by lib_data/common.py; deviation: named explicitly
+  "pyyaml",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+dev-mode-dirs = ["."]
+
+[tool.hatch.build.targets.wheel]
+packages = ["graspdiff_adapter"]
+
+[tool.uv]
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+build-constraint-dependencies = ["cython<3", "setuptools<82"]
+# theseus-ai 0.1.3 has no cp310 wheel; its setup.py imports torch and compiles CUDA
+# extensions (unused here) unless THESEUS_FORCE_CUDA=0.
+extra-build-dependencies = { theseus-ai = [{ requirement = "torch", match-runtime = true }] }
+
+[tool.uv.extra-build-variables]
+theseus-ai = { THESEUS_FORCE_CUDA = "0" }
+
+# scikit-sparse is sdist-only; its metadata stated here spares a build at lock time.
+[[tool.uv.dependency-metadata]]
+name = "scikit-sparse"
+version = "0.4.8"
+requires-dist = ["numpy>=1.13.3", "scipy>=0.19"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu117" }
+torchvision = { index = "pytorch-cu117" }
+torch-scatter = { index = "pyg-torch-2-0-1-cu117" }
+# Prebuilt wheel instead of a local build (needs g++-9 and a matching nvcc).
+pytorch3d = { url = "https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py310_cu117_pyt201/pytorch3d-0.7.4-cp310-cp310-linux_x86_64.whl" }
+
+[[tool.uv.index]]
+name = "pytorch-cu117"
+url = "https://download.pytorch.org/whl/cu117"
+explicit = true
+
+[[tool.uv.index]]
+name = "pyg-torch-2-0-1-cu117"
+url = "https://data.pyg.org/whl/torch-2.0.1+cu117.html"
+format = "flat"
+explicit = true
