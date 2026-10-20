@@ -357,7 +357,7 @@ class MetaVSIGD(nn.Module):
             T_fit=50,
             sdf_cost=False,
             sdf_grad_align=False,
-            device="cuda:0",
+            device=pc_surf.device,
         )
         H = lang_dyn.sample(batch_size=num_samples)
 
