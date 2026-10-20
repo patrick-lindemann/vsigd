@@ -21,6 +21,8 @@ from lib_data import common as cmn
 
 
 class Train:
+    DatasetClass = dataset_acronym.PointcloudAcronymAndNglodSDFDataset
+
     def __init__(self, cfg_dict: Dict, args: argparse.Namespace):
         # config
         data_cfg = cfg_dict["data"]
@@ -44,7 +46,7 @@ class Train:
 
         # datasets
         train_cfg = cfg_dict["train"]
-        DatasetClass = dataset_acronym.PointcloudAcronymAndNglodSDFDataset
+        DatasetClass = self.DatasetClass
 
         ds_args = {
             "data_dir": data_dir,
